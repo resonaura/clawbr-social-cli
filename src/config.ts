@@ -24,13 +24,6 @@ export const envSchema = z.object({
   // OpenRouter API (for image generation)
   OPENROUTER_API_KEY: z.string().optional(),
 
-  // Google Gemini API
-  GEMINI_API_KEY: z.string().optional(),
-  GOOGLE_AI_API_KEY: z.string().optional(),
-
-  // OpenAI API
-  OPENAI_API_KEY: z.string().optional(),
-
   // CLI behavior
   CLAWBR_NO_COLOR: z.string().optional().default("false"),
   CLAWBR_DEBUG: z.string().optional().default("false"),
@@ -88,8 +81,6 @@ export const parsedConfig = {
   },
   providers: {
     openrouter: config.OPENROUTER_API_KEY,
-    gemini: config.GEMINI_API_KEY || config.GOOGLE_AI_API_KEY,
-    openai: config.OPENAI_API_KEY,
   },
   cli: {
     noColor: config.CLAWBR_NO_COLOR === "true",

@@ -3,9 +3,6 @@ import { writeFileSync } from "fs";
 import ora from "ora";
 import fetch from "node-fetch";
 import { resolve } from "path";
-import { generateImage } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { loadCredentials } from "../utils/credentials.js";
 import { resolveImageToDataUri, validateImageInput } from "../utils/image.js";
 import { requireOnboarding } from "../utils/config.js";
@@ -160,37 +157,9 @@ export class GenerateCommand extends CommandRunner {
           sourceImageData,
           imageConfig
         ));
-      } else if (aiProvider === "openai") {
-        if (sourceImageData) {
-          throw new Error(
-            "OpenAI does not support image-to-image generation. Use OpenRouter with a model that supports reference images."
-          );
-        }
-        ({ buffer: imageBuffer, modelUsed } = await this.generateWithFallback(
-          prompt,
-          size,
-          apiKey,
-          "openai",
-          { primary: primaryModel, fallbacks: fallbackModels },
-          spinner
-        ));
-      } else if (aiProvider === "google") {
-        if (sourceImageData) {
-          throw new Error(
-            "Google Imagen does not support image-to-image generation. Use OpenRouter with a model that supports reference images."
-          );
-        }
-        ({ buffer: imageBuffer, modelUsed } = await this.generateWithFallback(
-          prompt,
-          size,
-          apiKey,
-          "google",
-          { primary: primaryModel, fallbacks: fallbackModels },
-          spinner
-        ));
       } else {
         if (spinner) spinner.fail();
-        throw new Error(`Unsupported AI provider: ${aiProvider}`);
+        throw new Error(`Unsupported AI provider: ${aiProvider}. Only 'openrouter' is supported.`);
       }
 
       // ─────────────────────────────────────────────────────────────────────
@@ -253,7 +222,7 @@ export class GenerateCommand extends CommandRunner {
     prompt: string,
     size: string,
     apiKey: string,
-    provider: "openrouter" | "openai" | "google",
+    provider: "openrouter",
     config: { primary: string | null; fallbacks: string[] },
     spinner: {
       text: string;
@@ -317,27 +286,13 @@ export class GenerateCommand extends CommandRunner {
   }
 
   /**
-   * get the model configuration for the AI SDK
-   */
-  private getImageModel(provider: string, apiKey: string, model: string) {
-    if (provider === "openai") {
-      const openai = createOpenAI({ apiKey });
-      return openai.image(model);
-    } else if (provider === "google") {
-      const google = createGoogleGenerativeAI({ apiKey });
-      return google.image(model);
-    }
-    throw new Error(`Provider ${provider} not supported via AI SDK`);
-  }
-
-  /**
    * Generate image using a specific model
    */
   private async generateWithModel(
     prompt: string,
     size: string,
     apiKey: string,
-    provider: "openrouter" | "openai" | "google",
+    provider: "openrouter",
     model: string,
     sourceImageData?: string,
     imageConfig?: { aspectRatio?: string; imageSize?: string }
@@ -461,23 +416,7 @@ export class GenerateCommand extends CommandRunner {
       throw new Error("No image generated from OpenRouter response");
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // OPENAI / GOOGLE (Via AI SDK)
-    // ─────────────────────────────────────────────────────────────────────
-    const imageModel = this.getImageModel(provider, apiKey, model);
-
-    // Pass size as string directly as per SDK requirements.
-    // We cast to 'any' to avoid strict template literal validation errors
-    // since we know validSizes allows specifically "1024x1024" etc.
-    const { image } = await generateImage({
-      model: imageModel,
-      prompt,
-      n: 1,
-      size: size as any,
-    });
-
-    // The image object from 'ai' SDK contains the base64 string
-    return Buffer.from(image.base64, "base64");
+    throw new Error(`Unsupported provider: ${provider}`);
   }
 
   @Option({

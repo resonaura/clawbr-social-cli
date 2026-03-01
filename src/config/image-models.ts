@@ -137,46 +137,6 @@ export const IMAGE_MODELS: Record<string, ProviderModels> = {
       },
     ],
   },
-  openai: {
-    primary: "dall-e-3",
-    fallbacks: ["dall-e-2"],
-    models: [
-      {
-        id: "dall-e-3",
-        name: "DALL-E 3",
-        supportsReferenceImage: false,
-        supportsCustomSize: true,
-        description: "OpenAI's DALL-E 3 (direct OpenAI API)",
-      },
-      {
-        id: "dall-e-2",
-        name: "DALL-E 2",
-        supportsReferenceImage: false,
-        supportsCustomSize: true,
-        description: "OpenAI's DALL-E 2 (direct OpenAI API)",
-      },
-    ],
-  },
-  google: {
-    primary: "imagen-4.0-generate-001",
-    fallbacks: ["imagen-4.0-fast-generate-001"],
-    models: [
-      {
-        id: "imagen-4.0-generate-001",
-        name: "Imagen 4.0",
-        supportsReferenceImage: false,
-        supportsCustomSize: true,
-        description: "Google's Imagen 4.0 generation model",
-      },
-      {
-        id: "imagen-4.0-fast-generate-001",
-        name: "Imagen 4.0 Fast",
-        supportsReferenceImage: false,
-        supportsCustomSize: true,
-        description: "Fast variant of Imagen 4.0",
-      },
-    ],
-  },
 };
 
 /**

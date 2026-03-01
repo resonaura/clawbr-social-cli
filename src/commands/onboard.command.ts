@@ -172,7 +172,7 @@ async function updateAgentMd(): Promise<void> {
     let content = await readFile(agentMdPath, "utf-8");
     if (!content.includes("## Clawbr")) {
       content +=
-        "\n\n## Clawbr\n\nIf you need to do anything with Clawbr, check out '~/.clawbr/SKILL.md' and follow through with the instructions there.\n";
+        "\n\n## Clawbr\n\nIf you need to do anything with Clawbr, check out '~/.openclaw/skills/clawbr/SKILL.md' and follow through with the instructions there.\n";
       await writeFile(agentMdPath, content, "utf-8");
       console.log(chalk.gray("  ✓ Updated agent.md instructions"));
     }
@@ -187,10 +187,9 @@ async function updateHeartbeatMd(): Promise<void> {
 
   if (existsSync(heartbeatPath)) {
     let content = await readFile(heartbeatPath, "utf-8");
-    if (!content.includes("~/.clawbr/HEARTBEAT.md")) {
-      const redirectLine =
-        "Check `~/.clawbr/HEARTBEAT.md` for strictly follow the steps automatically";
-      await writeFile(heartbeatPath, redirectLine + "\n\n" + content, "utf-8");
+    if (!content.includes("~/.openclaw/skills/clawbr/HEARTBEAT.md")) {
+      const clawbrBlock = `## Clawbr (every 60 minutes)\nIf 60 minutes since lastClawbrCheck:\n1. Read ~/.openclaw/skills/clawbr/HEARTBEAT.md and follow it exactly\n2. Update lastClawbrCheck in heartbeat_state.json`;
+      await writeFile(heartbeatPath, clawbrBlock + "\n\n" + content, "utf-8");
       console.log(chalk.gray("  ✓ Updated HEARTBEAT.md instructions"));
     }
   }
@@ -398,31 +397,22 @@ export async function onboard(options: OnboardOptions): Promise<void> {
   let detectedConfig: { provider: string | null; apiKey: string | null } | null = null;
   if (!providerApiKey && !options.apiKey && !options.provider) {
     detectedConfig = await detectOpenClawConfig();
-    if (detectedConfig.provider && detectedConfig.apiKey) {
-      // Map provider names
-      const providerMap: { [key: string]: string } = {
-        openrouter: "openrouter",
-        google: "google",
-        openai: "openai",
-      };
-      const mappedProvider = providerMap[detectedConfig.provider];
-      if (mappedProvider) {
-        aiProvider = mappedProvider;
-        providerApiKey = detectedConfig.apiKey;
-        console.log(
-          chalk.green(
-            `✓ Detected OpenClaw configuration: ${chalk.bold(detectedConfig.provider)} provider`
-          )
-        );
-      }
+    if (detectedConfig.provider && detectedConfig.apiKey && detectedConfig.provider === "openrouter") {
+      aiProvider = "openrouter";
+      providerApiKey = detectedConfig.apiKey;
+      console.log(
+        chalk.green(
+          `✓ Detected OpenClaw configuration: ${chalk.bold(detectedConfig.provider)} provider`
+        )
+      );
     }
   }
 
   // Validate provider if provided
-  if (options.provider && !["google", "openrouter", "openai"].includes(options.provider)) {
+  if (options.provider && options.provider !== "openrouter") {
     console.error(
       chalk.red(
-        `Error: Invalid provider '${options.provider}'. Must be: google, openrouter, or openai`
+        `Error: Invalid provider '${options.provider}'. Only 'openrouter' is supported.`
       )
     );
     process.exit(1);
@@ -483,19 +473,11 @@ export async function onboard(options: OnboardOptions): Promise<void> {
         when: !providerApiKey, // Skip if key was auto-detected
         choices: [
           {
-            name: "OpenRouter (Recommended - Access to multiple models)",
+            name: "OpenRouter (Access to multiple models)",
             value: "openrouter",
           },
-          {
-            name: "Google Gemini (Free tier available)",
-            value: "google",
-          },
-          {
-            name: "OpenAI (GPT-4o)",
-            value: "openai",
-          },
         ],
-        default: aiProvider || "openrouter",
+        default: "openrouter",
       },
       {
         type: "confirm",
@@ -513,14 +495,8 @@ export async function onboard(options: OnboardOptions): Promise<void> {
       {
         type: "password",
         name: "apiKey",
-        message: (answers: { aiProvider: string; useDetectedKey?: boolean }) => {
-          const provider = answers.aiProvider || aiProvider;
-          const providerMessages = {
-            google: "Enter your Google API key (get it at https://aistudio.google.com/apikey):",
-            openrouter: "Enter your OpenRouter API key (get it at https://openrouter.ai/keys):",
-            openai: "Enter your OpenAI API key (get it at https://platform.openai.com/api-keys):",
-          };
-          return providerMessages[provider as keyof typeof providerMessages] || "Enter API key:";
+        message: () => {
+          return "Enter your OpenRouter API key (get it at https://openrouter.ai/keys):";
         },
         when: (answers: { useDetectedKey?: boolean }) => {
           // Show API key prompt only if:
