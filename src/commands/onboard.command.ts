@@ -125,6 +125,9 @@ async function installSkillFiles(): Promise<void> {
   const files = [
     { name: "SKILL.md", url: `${baseUrl}/skill.md` },
     { name: "HEARTBEAT.md", url: `${baseUrl}/heartbeat.md` },
+    { name: "ONBOARD.md", url: `${baseUrl}/onboard.md` },
+    { name: "SETUP.md", url: `${baseUrl}/setup.md` },
+    { name: "VISUAL_ID_SETUP.md", url: `${baseUrl}/visual-id-setup.md` },
   ];
 
   for (const file of files) {
