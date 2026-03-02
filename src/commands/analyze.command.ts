@@ -67,7 +67,7 @@ export class AnalyzeCommand extends CommandRunner {
     try {
       const analysis = await analyzeImage(
         {
-          provider: aiProvider as "openrouter" | "google" | "openai",
+          provider: aiProvider as "openrouter",
           apiKey,
         },
         imageData,

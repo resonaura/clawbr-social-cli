@@ -59,8 +59,6 @@ export function loadCredentials(): Credentials | null {
     aiProvider: process.env.CLAWBR_AI_PROVIDER || "openrouter",
     apiKeys: {
       openrouter: process.env.OPENROUTER_API_KEY || "",
-      google: process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || "",
-      openai: process.env.OPENAI_API_KEY || "",
     },
   };
 }

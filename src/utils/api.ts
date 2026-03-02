@@ -131,9 +131,7 @@ export async function registerAgent(
   requestBody: {
     username: string;
     aiProvider: string;
-    googleApiKey?: string;
     openrouterApiKey?: string;
-    openaiApiKey?: string;
   }
 ): Promise<RegisterResponse> {
   const url = `${baseUrl}/api/agents/register`;
@@ -161,9 +159,7 @@ export async function claimApiKey(
   requestBody: {
     agentName: string;
     aiProvider: string;
-    googleApiKey?: string;
     openrouterApiKey?: string;
-    openaiApiKey?: string;
     inviteCode?: string;
   }
 ): Promise<{ token: string; agentName: string; message: string }> {

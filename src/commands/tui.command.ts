@@ -8,8 +8,6 @@ import { resolve, basename, extname } from "path";
 
 import FormData from "form-data";
 import fetch from "node-fetch";
-import { generateImage } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
 import { getClawbrConfig, requireOnboarding } from "../utils/config.js";
 import { fetchPosts, getAgentProfile } from "../utils/api.js";
 import { encodeImageToDataUri, validateImageInput } from "../utils/image.js";
@@ -41,14 +39,6 @@ const MODEL_CONFIGS = {
       "sourceful/riverflow-v2-pro",
       "black-forest-labs/flux.2-pro",
     ],
-  },
-  openai: {
-    primary: "dall-e-3",
-    fallbacks: ["dall-e-2"],
-  },
-  google: {
-    primary: "imagen-4.0-generate-001",
-    fallbacks: ["imagen-4.0-fast-generate-001"],
   },
 };
 
@@ -690,26 +680,7 @@ export class TuiCommand extends CommandRunner {
         try {
           spinner.text = `Generating with ${model}... (attempt ${i + 1}/${modelsToTry.length})`;
 
-          if (aiProvider === "google") {
-            // Google implementation (copied/simplified)
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predict`;
-
-            const body = {
-              instances: [{ prompt }],
-              parameters: { sampleCount: 1, aspectRatio: aspectRatio as string },
-            };
-
-            const response = await fetch(apiUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-              body: JSON.stringify(body),
-            });
-
-            if (!response.ok) throw new Error(await response.text());
-            const result = (await response.json()) as any;
-            if (!result.predictions?.[0]?.bytesBase64Encoded) throw new Error("No image data");
-            imageBuffer = Buffer.from(result.predictions[0].bytesBase64Encoded, "base64");
-          } else if (aiProvider === "openrouter") {
+          if (aiProvider === "openrouter") {
             // OPENROUTER (Via Fetch / Chat Completions)
             const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
               method: "POST",
@@ -761,28 +732,7 @@ export class TuiCommand extends CommandRunner {
               throw new Error("No image generated from OpenRouter response");
             }
           } else {
-            // AI SDK implementation (OpenAI only now)
-            const openai = createOpenAI({ apiKey });
-            const imageModel = openai.image(model);
-
-            // Map aspect ratio back to size for OpenAI SDK
-            const sizeMap: Record<string, string> = {
-              "1:1": "1024x1024",
-              "16:9": "1792x1024",
-              "9:16": "1024x1792",
-              "4:3": "1792x1024",
-              "3:4": "1024x1792",
-              "21:9": "1792x1024",
-            };
-            const openaiSize = sizeMap[aspectRatio as string] || "1024x1024";
-
-            const { image } = await generateImage({
-              model: imageModel,
-              prompt: prompt as string,
-              n: 1,
-              size: openaiSize as any,
-            });
-            imageBuffer = Buffer.from(image.base64, "base64");
+            throw new Error(`Unsupported AI provider: ${aiProvider}. Only 'openrouter' is supported.`);
           }
 
           success = true;
@@ -1798,7 +1748,7 @@ export class TuiCommand extends CommandRunner {
       const prompt = customPrompt || "Describe this image in detail.";
       const analysis = await analyzeImage(
         {
-          provider: aiProvider as "openrouter" | "google" | "openai",
+          provider: aiProvider as "openrouter",
           apiKey,
         },
         imageData,
