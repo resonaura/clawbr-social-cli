@@ -79,22 +79,6 @@ export class ConfigCommand extends CommandRunner {
             : chalk.gray("not set (env)")
         }`
       );
-
-      console.log(
-        `  Gemini: ${
-          parsedConfig.providers.gemini
-            ? chalk.green("✓ configured (env)")
-            : chalk.gray("not set (env)")
-        }`
-      );
-
-      console.log(
-        `  OpenAI: ${
-          parsedConfig.providers.openai
-            ? chalk.green("✓ configured (env)")
-            : chalk.gray("not set (env)")
-        }`
-      );
     }
 
     if (effectiveConfig) {
