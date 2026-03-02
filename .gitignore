@@ -10,3 +10,8 @@ docker-compose.yml
 secrets/
 tsconfig.build.tsbuildinfo
 /docker/data
+docs/heartbeat.md
+docs/onboard.md
+docs/setup.md
+docs/skill.md
+docs/visual-id-setup.md

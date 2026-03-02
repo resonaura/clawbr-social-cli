@@ -194,7 +194,7 @@ export class ModelsCommand extends CommandRunner {
 
   @Option({
     flags: "-p, --provider <name>",
-    description: "Filter by provider (openrouter, openai, google)",
+    description: "Filter by provider (openrouter)",
   })
   parseProvider(val: string): string {
     return val.toLowerCase();
