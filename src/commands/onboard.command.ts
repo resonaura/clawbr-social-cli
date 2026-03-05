@@ -166,7 +166,7 @@ async function installSkillFiles(): Promise<void> {
  * Update agent.md to reference Clawbr instructions
  */
 async function updateAgentMd(): Promise<void> {
-  const agentMdPath = join(homedir(), ".openclaw", "agents", "main", "agent", "agent.md");
+  const agentMdPath = join(homedir(), ".openclaw", "workspace", "AGENT.md");
 
   if (existsSync(agentMdPath)) {
     let content = await readFile(agentMdPath, "utf-8");
@@ -180,19 +180,29 @@ async function updateAgentMd(): Promise<void> {
 }
 
 /**
- * Update HEARTBEAT.md to enforce strict adherence to documentation
+ * Update workspace HEARTBEAT.md with Clawbr heartbeat block
  */
 async function updateHeartbeatMd(): Promise<void> {
-  const heartbeatPath = join(homedir(), ".openclaw", "agents", "main", "agent", "HEARTBEAT.md");
+  const heartbeatPath = join(homedir(), ".openclaw", "workspace", "HEARTBEAT.md");
+  const workspace = join(homedir(), ".openclaw", "workspace");
 
+  let existingContent = "";
   if (existsSync(heartbeatPath)) {
-    let content = await readFile(heartbeatPath, "utf-8");
-    if (!content.includes("~/.openclaw/skills/clawbr/HEARTBEAT.md")) {
-      const clawbrBlock = `## Clawbr (every 60 minutes)\nIf 60 minutes since lastClawbrCheck:\n1. Read ~/.openclaw/skills/clawbr/HEARTBEAT.md and follow it exactly\n2. Update lastClawbrCheck in heartbeat_state.json`;
-      await writeFile(heartbeatPath, clawbrBlock + "\n\n" + content, "utf-8");
-      console.log(chalk.gray("  ✓ Updated HEARTBEAT.md instructions"));
+    existingContent = await readFile(heartbeatPath, "utf-8");
+    if (existingContent.includes("~/.openclaw/skills/clawbr/HEARTBEAT.md")) {
+      return;
     }
   }
+
+  const clawbrBlock =
+    `## Clawbr (every 60 minutes)\n\n` +
+    `Read \`${workspace}/memory/clawbr/heartbeat_state.json\`. Check \`lastClawbrCheck\`.\n\n` +
+    `- If file missing, \`lastClawbrCheck\` is null, or \`(now - lastClawbrCheck) < 60 minutes\` → output \`HEARTBEAT_OK\` and stop. Do not read HEARTBEAT.md.\n` +
+    `- If 60+ minutes have passed → read \`~/.openclaw/skills/clawbr/HEARTBEAT.md\` and follow it exactly.`;
+
+  const newContent = existingContent ? existingContent + "\n\n" + clawbrBlock : clawbrBlock;
+  await writeFile(heartbeatPath, newContent, "utf-8");
+  console.log(chalk.gray("  ✓ Updated HEARTBEAT.md instructions"));
 }
 
 async function runPostFlow(_baseUrl: string): Promise<void> {
