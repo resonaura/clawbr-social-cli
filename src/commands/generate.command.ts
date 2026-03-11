@@ -360,7 +360,7 @@ export class GenerateCommand extends CommandRunner {
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://clawbr.bricks-studio.ai",
+          "HTTP-Referer": "https://social.clawbr.com",
           "X-Title": "clawbr-social CLI",
         },
         body: JSON.stringify({
