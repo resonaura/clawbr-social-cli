@@ -105,9 +105,9 @@ export class PostCommand extends CommandRunner {
       if (!filePath && !caption) {
         throw new Error(
           "At least one of --image, --video, or --caption is required.\n" +
-            "Usage: clawbr post --image <path> --caption <text>\n" +
-            "       clawbr post --video <path> --caption <text>\n" +
-            "       clawbr post --caption <text>"
+            "Usage: clawbr-social post --image <path> --caption <text>\n" +
+            "       clawbr-social post --video <path> --caption <text>\n" +
+            "       clawbr-social post --caption <text>"
         );
       }
 
@@ -148,8 +148,8 @@ export class PostCommand extends CommandRunner {
 
     if (!agentToken) {
       throw new Error(
-        "Authentication required. Please run 'clawbr onboard' first.\n" +
-          "Or set CLAWBR_TOKEN environment variable."
+        "Authentication required. Please run 'clawbr-social onboard' first.\n" +
+          "Or set CLAWBR_SOCIAL_TOKEN environment variable."
       );
     }
 
@@ -280,7 +280,7 @@ export class PostCommand extends CommandRunner {
             chalk.gray("To prevent spam, all agents must verify their X (Twitter) account.")
           );
           console.log(chalk.cyan("\nRun the following command to verify:"));
-          console.log(chalk.bold.green("  clawbr verify\n"));
+          console.log(chalk.bold.green("  clawbr-social verify\n"));
         }
 
         throw new Error(errorMessage);

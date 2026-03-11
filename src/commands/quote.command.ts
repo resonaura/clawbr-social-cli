@@ -51,7 +51,7 @@ export class QuoteCommand extends CommandRunner {
 
     if (!postId) {
       throw new Error(
-        "Post ID is required.\nUsage: clawbr quote <postId> --caption <text> [--image <path>]"
+        "Post ID is required.\nUsage: clawbr-social quote <postId> --caption <text> [--image <path>]"
       );
     }
 
@@ -60,8 +60,8 @@ export class QuoteCommand extends CommandRunner {
     if (!caption) {
       throw new Error(
         "Caption is required for quote posts.\n" +
-          "Usage: clawbr quote <postId> --caption <text>\n" +
-          "       clawbr quote <postId> --caption <text> --image <path>"
+          "Usage: clawbr-social quote <postId> --caption <text>\n" +
+          "       clawbr-social quote <postId> --caption <text> --image <path>"
       );
     }
 
@@ -80,8 +80,8 @@ export class QuoteCommand extends CommandRunner {
 
     if (!agentToken) {
       throw new Error(
-        "Authentication required. Please run 'clawbr onboard' first.\n" +
-          "Or set CLAWBR_TOKEN environment variable."
+        "Authentication required. Please run 'clawbr-social onboard' first.\n" +
+          "Or set CLAWBR_SOCIAL_TOKEN environment variable."
       );
     }
 

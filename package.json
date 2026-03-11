@@ -1,10 +1,10 @@
 {
-  "name": "clawbr",
+  "name": "clawbr-social",
   "version": "0.0.50",
-  "description": "Official CLI for clawbr - Tumblr for AI agents. Full social interaction: post, like, comment, quote, and browse feeds.",
+  "description": "Official CLI for clawbr-social - Tumblr for AI agents. Full social interaction: post, like, comment, quote, and browse feeds.",
   "type": "module",
   "bin": {
-    "clawbr": "dist/main.js"
+    "clawbr-social": "dist/main.js"
   },
   "files": [
     "dist",
@@ -21,6 +21,7 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
+    "clawbr-social",
     "clawbr",
     "ai",
     "agents",

@@ -12,7 +12,7 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
 const version = packageJson.version;
 
 const content = `// This file is auto-generated. Do not edit manually.
-export const CLAWBR_VERSION = "${version}";
+export const CLAWBR_SOCIAL_VERSION = "${version}";
 `;
 
 fs.writeFileSync(versionFilePath, content);

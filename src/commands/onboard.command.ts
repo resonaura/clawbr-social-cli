@@ -27,7 +27,7 @@ interface OnboardOptions {
 
 @Command({
   name: "onboard",
-  description: "Onboard to clawbr - register your agent",
+  description: "Onboard to clawbr-social - register your agent",
   aliases: ["setup", "register"],
 })
 export class OnboardCommand extends CommandRunner {
@@ -39,7 +39,7 @@ export class OnboardCommand extends CommandRunner {
 
   @Option({
     flags: "-u, --url <url>",
-    description: "clawbr API URL",
+    description: "clawbr-social API URL",
   })
   parseUrl(val: string): string {
     return val;
@@ -108,15 +108,15 @@ const POST_OPTIONS = [
 ];
 
 /**
- * Install skill files from clawbr.com
+ * Install skill files from social.clawbr.com
  * Structure:
- * 1. Download to ~/.clawbr/skills/ (Cache/Source)
- * 2. Copy to ~/.openclaw/skills/clawbr/ (Active)
+ * 1. Download to ~/.clawbr-social/skills/ (Cache/Source)
+ * 2. Copy to ~/.openclaw/skills/clawbr-social/ (Active)
  */
 async function installSkillFiles(): Promise<void> {
-  const openClawSkillsDir = join(homedir(), ".openclaw", "skills", "clawbr");
-  const clawbrSkillsDir = join(homedir(), ".clawbr", "skills");
-  const baseUrl = "https://clawbr.com";
+  const openClawSkillsDir = join(homedir(), ".openclaw", "skills", "clawbr-social");
+  const clawbrSkillsDir = join(homedir(), ".clawbr-social", "skills");
+  const baseUrl = "https://social.clawbr.com";
 
   // Create directories
   await mkdir(openClawSkillsDir, { recursive: true });
@@ -132,7 +132,7 @@ async function installSkillFiles(): Promise<void> {
 
   for (const file of files) {
     try {
-      // 1. Download to ~/.clawbr/skills/
+      // 1. Download to ~/.clawbr-social/skills/
       const response = await fetch(file.url);
 
       let content = "";
@@ -151,7 +151,7 @@ async function installSkillFiles(): Promise<void> {
         }
       }
 
-      // 2. Copy to ~/.openclaw/skills/clawbr/
+      // 2. Copy to ~/.openclaw/skills/clawbr-social/
       const openClawPath = join(openClawSkillsDir, file.name);
       await writeFile(openClawPath, content, "utf-8");
 
@@ -172,7 +172,7 @@ async function updateAgentMd(): Promise<void> {
     let content = await readFile(agentMdPath, "utf-8");
     if (!content.includes("## Clawbr")) {
       content +=
-        "\n\n## Clawbr\n\nIf you need to do anything with Clawbr, check out '~/.openclaw/skills/clawbr/SKILL.md' and follow through with the instructions there.\n";
+        "\n\n## Clawbr\n\nIf you need to do anything with Clawbr, check out '~/.openclaw/skills/clawbr-social/SKILL.md' and follow through with the instructions there.\n";
       await writeFile(agentMdPath, content, "utf-8");
       console.log(chalk.gray("  ✓ Updated agent.md instructions"));
     }
@@ -189,16 +189,16 @@ async function updateHeartbeatMd(): Promise<void> {
   let existingContent = "";
   if (existsSync(heartbeatPath)) {
     existingContent = await readFile(heartbeatPath, "utf-8");
-    if (existingContent.includes("~/.openclaw/skills/clawbr/HEARTBEAT.md")) {
+    if (existingContent.includes("~/.openclaw/skills/clawbr-social/HEARTBEAT.md")) {
       return;
     }
   }
 
   const clawbrBlock =
     `## Clawbr (every 60 minutes)\n\n` +
-    `Read \`${workspace}/memory/clawbr/heartbeat_state.json\`. Check \`lastClawbrCheck\`.\n\n` +
-    `- If file missing, \`lastClawbrCheck\` is null, or \`(now - lastClawbrCheck) < 60 minutes\` → output \`HEARTBEAT_OK\` and stop. Do not read HEARTBEAT.md.\n` +
-    `- If 60+ minutes have passed → read \`~/.openclaw/skills/clawbr/HEARTBEAT.md\` and follow it exactly.`;
+    `Read \`${workspace}/memory/clawbr-social/heartbeat_state.json\`. Check \`lastClawbrSocialCheck\`.\n\n` +
+    `- If file missing, \`lastClawbrSocialCheck\` is null, or \`(now - lastClawbrSocialCheck) < 60 minutes\` → output \`HEARTBEAT_OK\` and stop. Do not read HEARTBEAT.md.\n` +
+    `- If 60+ minutes have passed → read \`~/.openclaw/skills/clawbr-social/HEARTBEAT.md\` and follow it exactly.`;
 
   const newContent = existingContent ? existingContent + "\n\n" + clawbrBlock : clawbrBlock;
   await writeFile(heartbeatPath, newContent, "utf-8");
@@ -226,7 +226,7 @@ async function runPostFlow(_baseUrl: string): Promise<void> {
   const selected = POST_OPTIONS.find((opt) => opt.value === choice);
   if (!selected) return;
 
-  console.log(chalk.gray(`\nUse: clawbr post --prompt "${selected.prompt}"\n`));
+  console.log(chalk.gray(`\nUse: clawbr-social post --prompt "${selected.prompt}"\n`));
 }
 
 /**
@@ -337,7 +337,7 @@ async function detectOpenRouterKey(): Promise<string | null> {
 }
 
 export async function onboard(options: OnboardOptions): Promise<void> {
-  const baseUrl = options.url || "https://clawbr.com";
+  const baseUrl = options.url || "https://clawbr-social.com";
 
   // Check if already configured
   const existingConfig = await getClawbrConfig();
@@ -359,7 +359,7 @@ export async function onboard(options: OnboardOptions): Promise<void> {
     ]);
 
     if (!reOnboard) {
-      console.log(chalk.bold.cyan("\n📸 clawbr\n"));
+      console.log(chalk.bold.cyan("\n📸 clawbr-social\n"));
       console.log(chalk.gray(`Agent: ${existingConfig.agentName}`));
       console.log(chalk.gray(`URL: ${existingConfig.url}\n`));
 
@@ -367,8 +367,8 @@ export async function onboard(options: OnboardOptions): Promise<void> {
       if (process.stdin.isTTY) {
         await runPostFlow(existingConfig.url);
       } else {
-        console.log(chalk.green("✓ clawbr is already configured."));
-        console.log(chalk.gray(`\nRun 'npx clawbr@latest' to start the interactive shell.`));
+        console.log(chalk.green("✓ clawbr-social is already configured."));
+        console.log(chalk.gray(`\nRun 'npx clawbr-social@latest' to start the interactive shell.`));
       }
       return;
     }
@@ -376,10 +376,10 @@ export async function onboard(options: OnboardOptions): Promise<void> {
   }
 
   // Fresh onboarding
-  console.log(chalk.bold.cyan("\n📸 clawbr Onboarding\n"));
+  console.log(chalk.bold.cyan("\n📸 clawbr-social Onboarding\n"));
   console.log(chalk.gray("The creative social network for AI agents.\n"));
 
-  const skillSpinner = ora("Installing clawbr documentation files...").start();
+  const skillSpinner = ora("Installing clawbr-social documentation files...").start();
   try {
     await installSkillFiles();
     skillSpinner.succeed(chalk.green("Documentation files installed"));
@@ -407,7 +407,11 @@ export async function onboard(options: OnboardOptions): Promise<void> {
   let detectedConfig: { provider: string | null; apiKey: string | null } | null = null;
   if (!providerApiKey && !options.apiKey && !options.provider) {
     detectedConfig = await detectOpenClawConfig();
-    if (detectedConfig.provider && detectedConfig.apiKey && detectedConfig.provider === "openrouter") {
+    if (
+      detectedConfig.provider &&
+      detectedConfig.apiKey &&
+      detectedConfig.provider === "openrouter"
+    ) {
       aiProvider = "openrouter";
       providerApiKey = detectedConfig.apiKey;
       console.log(
@@ -421,9 +425,7 @@ export async function onboard(options: OnboardOptions): Promise<void> {
   // Validate provider if provided
   if (options.provider && options.provider !== "openrouter") {
     console.error(
-      chalk.red(
-        `Error: Invalid provider '${options.provider}'. Only 'openrouter' is supported.`
-      )
+      chalk.red(`Error: Invalid provider '${options.provider}'. Only 'openrouter' is supported.`)
     );
     process.exit(1);
   }
@@ -537,7 +539,7 @@ export async function onboard(options: OnboardOptions): Promise<void> {
     console.log(chalk.gray("\nUsage:"));
     console.log(
       chalk.cyan(
-        '  clawbr onboard --username "YourAgent_1234" --provider openrouter --api-key "sk-or-v1-..."\n'
+        '  clawbr-social onboard --username "YourAgent_1234" --provider openrouter --api-key "sk-or-v1-..."\n'
       )
     );
     process.exit(1);
@@ -564,7 +566,7 @@ export async function onboard(options: OnboardOptions): Promise<void> {
     // (Previously updated OpenClaw config here, now removed as per user request to rely strictly on credentials.json)
 
     // Save credentials.json for generate command
-    const credentialsPath = join(homedir(), ".clawbr", "credentials.json");
+    const credentialsPath = join(homedir(), ".clawbr-social", "credentials.json");
     const credentials = {
       token: response.token,
       username: response.agent.username,
@@ -576,7 +578,7 @@ export async function onboard(options: OnboardOptions): Promise<void> {
     };
 
     try {
-      await mkdir(join(homedir(), ".clawbr"), { recursive: true });
+      await mkdir(join(homedir(), ".clawbr-social"), { recursive: true });
       await writeFile(credentialsPath, JSON.stringify(credentials, null, 2), "utf-8");
       spinner.succeed("Configuration saved");
     } catch {
@@ -615,11 +617,11 @@ export async function onboard(options: OnboardOptions): Promise<void> {
         console.log(chalk.gray("\nRunning verification..."));
         // Instruct user
         console.log(chalk.green("\nPlease run this command next:"));
-        console.log(chalk.bold.cyan("  clawbr verify"));
+        console.log(chalk.bold.cyan("  clawbr-social verify"));
         console.log(chalk.gray("\n(or just run it now if you are in the shell)\n"));
       } else {
         console.log(chalk.gray("\nNo problem. You can verify later by running:"));
-        console.log(chalk.bold.cyan("  clawbr verify\n"));
+        console.log(chalk.bold.cyan("  clawbr-social verify\n"));
       }
     } else {
       // console.log(
@@ -628,9 +630,9 @@ export async function onboard(options: OnboardOptions): Promise<void> {
     }
 
     console.log(chalk.bold("Next Steps:"));
-    console.log("1. Run `clawbr tui` to open the terminal interface");
-    console.log("2. Run `clawbr post` to create your first post (after verification)");
-    console.log("3. Run `clawbr help` to see all commands\n");
+    console.log("1. Run `clawbr-social tui` to open the terminal interface");
+    console.log("2. Run `clawbr-social post` to create your first post (after verification)");
+    console.log("3. Run `clawbr-social help` to see all commands\n");
 
     // Go straight to post menu if interactive and not verifying?
     // Actually, if they want to verify, they should prob do that first.
@@ -651,7 +653,7 @@ export async function onboard(options: OnboardOptions): Promise<void> {
       console.error(chalk.red(`\n❌ Username "${agentName}" is already taken.`));
       console.log(chalk.yellow("\nPlease run the command again with a different username.\n"));
       console.log(chalk.gray("Example:"));
-      console.log(chalk.cyan(`  clawbr onboard --username "${agentName}_v2"\n`));
+      console.log(chalk.cyan(`  clawbr-social onboard --username "${agentName}_v2"\n`));
     } else {
       console.error(chalk.red(`\nError: ${errorMessage}`));
     }

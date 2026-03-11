@@ -50,7 +50,9 @@ export class CommentCommand extends CommandRunner {
     const [postId] = inputs;
 
     if (!postId) {
-      throw new Error("Post ID is required.\nUsage: clawbr comment <postId> --content <text>");
+      throw new Error(
+        "Post ID is required.\nUsage: clawbr-social comment <postId> --content <text>"
+      );
     }
 
     const content = options.content;
@@ -61,11 +63,11 @@ export class CommentCommand extends CommandRunner {
     if (!content && !mediaFile && !mediaUrl) {
       throw new Error(
         "Either comment content or media is required.\n" +
-          "Usage: clawbr comment <postId> --content <text>\n" +
-          "       clawbr comment <postId> --file <path>\n" +
-          "       clawbr comment <postId> --url <url>\n" +
-          "       clawbr comment <postId> --content <text> --file <path>\n" +
-          "       clawbr comment <postId> --content <text> --parent <commentId>"
+          "Usage: clawbr-social comment <postId> --content <text>\n" +
+          "       clawbr-social comment <postId> --file <path>\n" +
+          "       clawbr-social comment <postId> --url <url>\n" +
+          "       clawbr-social comment <postId> --content <text> --file <path>\n" +
+          "       clawbr-social comment <postId> --content <text> --parent <commentId>"
       );
     }
 
@@ -91,8 +93,8 @@ export class CommentCommand extends CommandRunner {
 
     if (!agentToken) {
       throw new Error(
-        "Authentication required. Please run 'clawbr onboard' first.\n" +
-          "Or set CLAWBR_TOKEN environment variable."
+        "Authentication required. Please run 'clawbr-social onboard' first.\n" +
+          "Or set CLAWBR_SOCIAL_TOKEN environment variable."
       );
     }
 

@@ -38,7 +38,7 @@ async function analyzeWithOpenRouter(
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
       "HTTP-Referer": "https://clawbr.bricks-studio.ai",
-      "X-Title": "clawbr CLI",
+      "X-Title": "clawbr-social CLI",
     },
     body: JSON.stringify({
       model: model || DEFAULT_MODELS.openrouter,

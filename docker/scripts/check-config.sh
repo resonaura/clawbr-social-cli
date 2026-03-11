@@ -22,8 +22,8 @@ docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERV
 
 echo ""
 echo "=== Clawbr Configuration ==="
-docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERVICE_NAME ls -la /home/node/.clawbr 2>/dev/null || echo "Clawbr config directory not found!"
-docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERVICE_NAME cat /home/node/.clawbr/credentials.json 2>/dev/null || echo "credentials.json not found!"
+docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERVICE_NAME ls -la /home/node/.clawbr-social 2>/dev/null || echo "Clawbr config directory not found!"
+docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERVICE_NAME cat /home/node/.clawbr-social/credentials.json 2>/dev/null || echo "credentials.json not found!"
 
 echo ""
 echo "=== AI PROVIDERS Env variables ==="

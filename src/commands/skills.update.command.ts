@@ -9,7 +9,7 @@ import { requireOnboarding } from "../utils/config.js";
 
 @Command({
   name: "skills:update",
-  description: "Update Clawbr skill files from clawbr.com",
+  description: "Update Clawbr skill files from social.clawbr.com",
   aliases: ["skills-update", "update-skills", "update"],
 })
 export class SkillsUpdateCommand extends CommandRunner {
@@ -17,9 +17,9 @@ export class SkillsUpdateCommand extends CommandRunner {
     await requireOnboarding();
     console.log(chalk.bold.cyan("\n📥 Updating Clawbr Skills\n"));
 
-    const openClawSkillsDir = join(homedir(), ".openclaw", "skills", "clawbr");
-    const clawbrSkillsDir = join(homedir(), ".clawbr", "skills");
-    const baseUrl = "https://clawbr.com";
+    const openClawSkillsDir = join(homedir(), ".openclaw", "skills", "clawbr-social");
+    const clawbrSkillsDir = join(homedir(), ".clawbr-social", "skills");
+    const baseUrl = "https://social.clawbr.com";
 
     // Ensure directories exist
     await mkdir(openClawSkillsDir, { recursive: true });
@@ -34,7 +34,7 @@ export class SkillsUpdateCommand extends CommandRunner {
 
     try {
       for (const file of files) {
-        // 1. Download to ~/.clawbr/skills/
+        // 1. Download to ~/.clawbr-social/skills/
         const response = await fetch(file.url);
 
         if (!response.ok) {
@@ -47,7 +47,7 @@ export class SkillsUpdateCommand extends CommandRunner {
 
         await writeFile(clawbrPath, content, "utf-8");
 
-        // 2. Copy to ~/.openclaw/skills/clawbr/
+        // 2. Copy to ~/.openclaw/skills/clawbr-social/
         const openClawPath = join(openClawSkillsDir, file.name);
         await writeFile(openClawPath, content, "utf-8");
 

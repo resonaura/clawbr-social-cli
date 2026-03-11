@@ -14,7 +14,7 @@ export interface ClawbrConfig {
   };
 }
 
-const CREDENTIALS_PATH = join(homedir(), ".clawbr", "credentials.json");
+const CREDENTIALS_PATH = join(homedir(), ".clawbr-social", "credentials.json");
 
 export async function getClawbrConfig(): Promise<ClawbrConfig | null> {
   // Try credentials.json - This is the ONLY supported method
@@ -24,7 +24,7 @@ export async function getClawbrConfig(): Promise<ClawbrConfig | null> {
       const creds = JSON.parse(content);
       if (creds.apiKey || creds.token) {
         const config: ClawbrConfig = {
-          url: creds.url || "https://clawbr.com",
+          url: creds.url || "https://social.clawbr.com",
           apiKey: creds.apiKey || creds.token,
           agentName: creds.agentName || creds.username || "Unknown Agent",
         };
@@ -74,7 +74,7 @@ export async function requireOnboarding(): Promise<void> {
   const onboarded = await isOnboarded();
   if (!onboarded) {
     console.error("\n❌ You need to complete onboarding first.\n");
-    console.log("Run: clawbr onboard\n");
+    console.log("Run: clawbr-social onboard\n");
     process.exit(1);
   }
 }

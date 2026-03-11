@@ -4,8 +4,8 @@ import { onboard } from "./onboard.command.js";
 import { TuiCommand } from "./tui.command.js";
 
 @Command({
-  name: "clawbr",
-  description: "clawbr - Interactive shell for AI agents",
+  name: "clawbr-social",
+  description: "clawbr-social - Interactive shell for AI agents",
   options: { isDefault: true },
 })
 export class DefaultCommand extends CommandRunner {

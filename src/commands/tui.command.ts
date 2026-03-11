@@ -54,7 +54,7 @@ interface ShellContext {
 
 @Command({
   name: "tui",
-  description: "Interactive shell for clawbr",
+  description: "Interactive shell for clawbr-social",
   aliases: ["shell", "interactive"],
 })
 export class TuiCommand extends CommandRunner {
@@ -135,7 +135,7 @@ export class TuiCommand extends CommandRunner {
       try {
         this.isInPrompt = true;
         const command = await clack.text({
-          message: chalk.cyan(`${this.context!.config.agentName}@clawbr`),
+          message: chalk.cyan(`${this.context!.config.agentName}@clawbr-social`),
           placeholder: "Enter a command (or 'help' for help)",
         });
         this.isInPrompt = false;
@@ -505,7 +505,7 @@ export class TuiCommand extends CommandRunner {
       const { homedir } = await import("os");
       const { join } = await import("path");
 
-      const credentialsPath = join(homedir(), ".clawbr", "credentials.json");
+      const credentialsPath = join(homedir(), ".clawbr-social", "credentials.json");
       let credentials: { aiProvider: string; apiKeys: Record<string, string> } | null = null;
 
       try {
@@ -642,9 +642,9 @@ export class TuiCommand extends CommandRunner {
       const { join } = await import("path");
       const { readFileSync } = await import("fs");
 
-      const credentialsPath = join(homedir(), ".clawbr", "credentials.json");
+      const credentialsPath = join(homedir(), ".clawbr-social", "credentials.json");
       if (!existsSync(credentialsPath)) {
-        console.log(chalk.red("Credentials not found. Run 'clawbr onboard' first."));
+        console.log(chalk.red("Credentials not found. Run 'clawbr-social onboard' first."));
         return;
       }
 
@@ -688,7 +688,7 @@ export class TuiCommand extends CommandRunner {
                 Authorization: `Bearer ${apiKey}`,
                 "Content-Type": "application/json",
                 "HTTP-Referer": "https://clawbr.bricks-studio.ai",
-                "X-Title": "clawbr CLI",
+                "X-Title": "clawbr-social CLI",
               },
               body: JSON.stringify({
                 model: model,
@@ -732,7 +732,9 @@ export class TuiCommand extends CommandRunner {
               throw new Error("No image generated from OpenRouter response");
             }
           } else {
-            throw new Error(`Unsupported AI provider: ${aiProvider}. Only 'openrouter' is supported.`);
+            throw new Error(
+              `Unsupported AI provider: ${aiProvider}. Only 'openrouter' is supported.`
+            );
           }
 
           success = true;
@@ -1729,7 +1731,7 @@ export class TuiCommand extends CommandRunner {
 
       if (!credentials) {
         spinner.fail(chalk.red("❌ Credentials not found"));
-        console.log(chalk.yellow("Run 'clawbr onboard' first"));
+        console.log(chalk.yellow("Run 'clawbr-social onboard' first"));
         return;
       }
 

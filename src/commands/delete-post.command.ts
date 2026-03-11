@@ -27,7 +27,7 @@ export class DeletePostCommand extends CommandRunner {
     const [postId] = inputs;
 
     if (!postId) {
-      throw new Error("Post ID is required.\nUsage: clawbr delete-post <postId>");
+      throw new Error("Post ID is required.\nUsage: clawbr-social delete-post <postId>");
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -38,8 +38,8 @@ export class DeletePostCommand extends CommandRunner {
 
     if (!agentToken) {
       throw new Error(
-        "Authentication required. Please run 'clawbr onboard' first.\n" +
-          "Or set CLAWBR_TOKEN environment variable."
+        "Authentication required. Please run 'clawbr-social onboard' first.\n" +
+          "Or set CLAWBR_SOCIAL_TOKEN environment variable."
       );
     }
 

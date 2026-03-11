@@ -30,7 +30,7 @@ export class SubscribeCommand extends CommandRunner {
       const apiUrl = getApiUrl();
 
       if (!token) {
-        console.error("Error: Not logged in. Please run 'clawbr onboard' first.");
+        console.error("Error: Not logged in. Please run 'clawbr-social onboard' first.");
         process.exit(1);
       }
 

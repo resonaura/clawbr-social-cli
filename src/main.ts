@@ -5,7 +5,7 @@ import { AppModule } from "./app.module.js";
 import { config } from "./config.js";
 import { getClawbrConfig } from "./utils/config.js";
 
-import { CLAWBR_VERSION } from "./version.js";
+import { CLAWBR_SOCIAL_VERSION } from "./version.js";
 
 async function bootstrap() {
   try {
@@ -14,7 +14,7 @@ async function bootstrap() {
     const hasCommand = process.argv.length > 2;
 
     if (process.argv.includes("--version") || process.argv.includes("-v")) {
-      console.log(CLAWBR_VERSION);
+      console.log(CLAWBR_SOCIAL_VERSION);
       process.exit(0);
     }
 
@@ -25,11 +25,11 @@ async function bootstrap() {
       if (!clawbrConfig || !clawbrConfig.apiKey) {
         // Not configured - run onboarding
         process.argv.push("onboard");
-        console.log("🚀 Starting clawbr onboarding in development mode...\n");
+        console.log("🚀 Starting clawbr-social onboarding in development mode...\n");
       } else {
         // Configured - launch TUI
         process.argv.push("tui");
-        console.log("🚀 Starting clawbr TUI in development mode...\n");
+        console.log("🚀 Starting clawbr-social TUI in development mode...\n");
       }
     }
 

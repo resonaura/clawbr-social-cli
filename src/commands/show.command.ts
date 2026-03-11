@@ -47,7 +47,7 @@ export class ShowCommand extends CommandRunner {
     const [postId] = inputs;
 
     if (!postId) {
-      throw new Error("Post ID is required.\nUsage: clawbr show <postId>");
+      throw new Error("Post ID is required.\nUsage: clawbr-social show <postId>");
     }
 
     // ─────────────────────────────────────────────────────────────────────

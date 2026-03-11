@@ -167,9 +167,12 @@ export class DockerInitCommand extends CommandRunner {
           }
 
           // Fix volume paths from /root to /home/node
-          if (composeContent.includes("/root/.clawbr")) {
+          if (composeContent.includes("/root/.clawbr-social")) {
             console.log(chalk.yellow("  ↺ Fix volume paths to /home/node..."));
-            composeContent = composeContent.replace(/\/root\/.clawbr/g, "/home/node/.clawbr");
+            composeContent = composeContent.replace(
+              /\/root\/.clawbr-social/g,
+              "/home/node/.clawbr-social"
+            );
             composeContent = composeContent.replace(/\/root\/.openclaw/g, "/home/node/.openclaw");
             modified = true;
           }
@@ -373,7 +376,7 @@ export class DockerInitCommand extends CommandRunner {
     } catch (error) {
       console.log(chalk.yellow("\n⚠️  Docker build failed, but configuration files are ready."));
       console.log(chalk.gray("\nYou can manually build and start containers:\n"));
-      console.log(chalk.cyan("  docker build -f docker/Dockerfile -t clawbr-cli:latest ."));
+      console.log(chalk.cyan("  docker build -f docker/Dockerfile -t clawbr-social-cli:latest ."));
       console.log(chalk.cyan("  docker compose -f docker/docker-compose.yml up -d\n"));
 
       const { continueAnyway } = await inquirer.prompt([
@@ -387,7 +390,7 @@ export class DockerInitCommand extends CommandRunner {
 
       if (!continueAnyway) {
         console.log(
-          chalk.yellow("\n⏸️  Setup paused. Run 'clawbr docker:init' again to resume.\n")
+          chalk.yellow("\n⏸️  Setup paused. Run 'clawbr-social docker:init' again to resume.\n")
         );
         return;
       }
@@ -410,7 +413,7 @@ export class DockerInitCommand extends CommandRunner {
       if (config?.apiKey) {
         console.log(chalk.yellow("Don't forget to verify your X account to enable posting!"));
         console.log(chalk.gray("You can do this anytime by running:"));
-        console.log(chalk.bold.green("  clawbr verify\n"));
+        console.log(chalk.bold.green("  clawbr-social verify\n"));
       }
     } catch (error) {
       console.log(chalk.red("\n❌ Failed to start containers"));
@@ -504,9 +507,12 @@ export class DockerInitCommand extends CommandRunner {
 
   private async checkExistingContainers(): Promise<string[]> {
     try {
-      const output = execSync('docker ps -a --filter "name=clawbr-agent-" --format "{{.Names}}"', {
-        encoding: "utf-8",
-      });
+      const output = execSync(
+        'docker ps -a --filter "name=clawbr-social-agent-" --format "{{.Names}}"',
+        {
+          encoding: "utf-8",
+        }
+      );
       return output
         .trim()
         .split("\n")
@@ -527,10 +533,10 @@ export class DockerInitCommand extends CommandRunner {
         // Ignore if docker-compose.yml doesn't exist
       }
 
-      // Remove any remaining clawbr containers
+      // Remove any remaining clawbr-social containers
       try {
         // Get container IDs first (cross-platform)
-        const containerIds = execSync('docker ps -a --filter "name=clawbr-agent-" -q', {
+        const containerIds = execSync('docker ps -a --filter "name=clawbr-social-agent-" -q', {
           encoding: "utf-8",
         }).trim();
 
@@ -594,7 +600,7 @@ export class DockerInitCommand extends CommandRunner {
         {
           type: "input",
           name: "usernameInput",
-          message: `Username for ${name} (will be visible on clawbr.com):`,
+          message: `Username for ${name} (will be visible on social.clawbr.com):`,
           default: `${name}_AI`,
           validate: (input: string) => {
             if (!input || input.trim().length === 0) {
@@ -675,7 +681,7 @@ export class DockerInitCommand extends CommandRunner {
 
     // Register agent immediately
     const spinner = ora("Registering agent...").start();
-    const baseUrl = process.env.CLAWBR_API_URL || "https://clawbr.com";
+    const baseUrl = process.env.CLAWBR_SOCIAL_API_URL || "https://social.clawbr.com";
     let token = "";
 
     try {
@@ -706,7 +712,7 @@ export class DockerInitCommand extends CommandRunner {
       } else {
         console.log(
           chalk.gray(
-            "You can verify later using `clawbr verify` (requires switching credentials).\n"
+            "You can verify later using `clawbr-social verify` (requires switching credentials).\n"
           )
         );
       }
@@ -824,27 +830,27 @@ export class DockerInitCommand extends CommandRunner {
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: clawbr-${serviceName}
+    container_name: clawbr-social-${serviceName}
     ports:
       - "${openclawPort}:${openclawPort}"
     environment:
       # Network binding - host access
       - OPENCLAW_GATEWAY_BIND=0.0.0.0
       - OPENCLAW_GATEWAY_PORT=${openclawPort}
-      
+
       # Clawbr API
-      - CLAWBR_API_URL=https://clawbr.com
-      - CLAWBR_TOKEN=${agent.token || ""}
-      
+      - CLAWBR_SOCIAL_API_URL=https://clawbr-social.com
+      - CLAWBR_SOCIAL_TOKEN=${agent.token || ""}
+
       # AI Provider Keys
       - OPENROUTER_API_KEY=\${${envPrefix}_OPENROUTER_KEY}
       - GEMINI_API_KEY=\${${envPrefix}_GEMINI_KEY}
       - OPENAI_API_KEY=\${${envPrefix}_OPENAI_KEY}
-      
+
       # Agent Identity
       - AGENT_NAME=${agent.name}
       - OPENCLAW_GATEWAY_NAME=${agent.name.toLowerCase()}
-      
+
       # FULL DISABLE OF AUTH AND PAIRING
       - OPENCLAW_GATEWAY_AUTH=none
       - OPENCLAW_AUTH_MODE=none
@@ -854,16 +860,16 @@ export class DockerInitCommand extends CommandRunner {
       - OPENCLAW_CONTROL_UI_DANGEROUSLY_DISABLE_PAIRING=true
       - OPENCLAW_DISABLE_DEVICE_PAIRING=true
       - OPENCLAW_AUTO_APPROVE_DEVICES=true
-      
+
       # Disable network discovery services
       - OPENCLAW_MDNS_DISABLE=true
       - OPENCLAW_BONJOUR_DISABLE=true
-      
+
       # Dev mode for maximum simplicity
       - DEV_MODE=true
       - NODE_ENV=development
     volumes:
-      - ./data/${serviceName}/config:/home/node/.clawbr
+      - ./data/${serviceName}/config:/home/node/.clawbr-social
       - ./data/${serviceName}/workspace:/workspace
     working_dir: /workspace
     restart: unless-stopped`;
@@ -878,10 +884,10 @@ ${services}
   private generateEnvDocker(agents: AgentConfig[]): string {
     const lines = [
       "# Clawbr Docker Multi-Agent Configuration",
-      "# Generated by clawbr docker:init",
+      "# Generated by clawbr-social docker:init",
       "# OpenClaw Authorization disabled for simplicity",
       "",
-      "CLAWBR_API_URL=https://clawbr.com",
+      "CLAWBR_SOCIAL_API_URL=https://social.clawbr.com",
       "",
     ];
 
@@ -906,7 +912,7 @@ ${services}
     console.log(chalk.cyan("\n🏗️  Building Docker image..."));
 
     try {
-      execSync("docker build --no-cache -f docker/Dockerfile -t clawbr-cli:latest .", {
+      execSync("docker build --no-cache -f docker/Dockerfile -t clawbr-social-cli:latest .", {
         stdio: "inherit",
         cwd: this.workingDir,
       });
@@ -984,7 +990,9 @@ ${services}
 
         try {
           // Use docker logs to check for gateway startup
-          const logs = execSync(`docker logs clawbr-${serviceName} --tail 50 2>&1`).toString();
+          const logs = execSync(
+            `docker logs clawbr-social-${serviceName} --tail 50 2>&1`
+          ).toString();
           if (logs.includes("[gateway]") && logs.includes("listening on")) {
             readyContainers.add(serviceName);
             spinner.text = `Waiting for OpenClaw to start... (${readyContainers.size}/${agents.length} ready)`;
@@ -1008,7 +1016,7 @@ ${services}
   private async configureContainers(agents: AgentConfig[]): Promise<void> {
     console.log(chalk.bold.cyan("\n🚀 Configuring agents...\n"));
 
-    const baseUrl = process.env.CLAWBR_API_URL || "https://clawbr.com";
+    const baseUrl = process.env.CLAWBR_SOCIAL_API_URL || "https://social.clawbr.com";
 
     for (const agent of agents) {
       const serviceName = `agent-${agent.name.toLowerCase()}`;
@@ -1060,7 +1068,7 @@ ${services}
             let content = await readFile(agentMdPath, "utf-8");
             if (!content.includes("## Clawbr")) {
               content +=
-                "\n\n## Clawbr\n\nIf you need to do anything with Clawbr, check out '~/.clawbr/SKILL.md' and follow through with the instructions there.\n";
+                "\n\n## Clawbr\n\nIf you need to do anything with Clawbr, check out '~/.clawbr-social/SKILL.md' and follow through with the instructions there.\n";
               await writeFile(agentMdPath, content, "utf-8");
             }
           }
@@ -1068,9 +1076,9 @@ ${services}
           const heartbeatPath = join(agentWorkspaceDir, "HEARTBEAT.md");
           if (existsSync(heartbeatPath)) {
             let content = await readFile(heartbeatPath, "utf-8");
-            if (!content.includes("~/.clawbr/HEARTBEAT.md")) {
+            if (!content.includes("~/.clawbr-social/HEARTBEAT.md")) {
               const redirectLine =
-                "Check `~/.clawbr/HEARTBEAT.md` for strictly follow the steps automatically";
+                "Check `~/.clawbr-social/HEARTBEAT.md` for strictly follow the steps automatically";
               await writeFile(heartbeatPath, redirectLine + "\n\n" + content, "utf-8");
             }
           }
@@ -1122,7 +1130,7 @@ ${services}
     console.log(chalk.gray("  Execute Clawbr commands:"));
     agents.forEach((agent) => {
       const serviceName = `agent-${agent.name.toLowerCase()}`;
-      console.log(chalk.cyan(`    docker compose exec ${serviceName} clawbr feed`));
+      console.log(chalk.cyan(`    docker compose exec ${serviceName} clawbr-social feed`));
     });
 
     console.log(chalk.gray("\n  Stop all agents:"));
@@ -1246,21 +1254,21 @@ ${services}
       if (existsSync(pkgPath)) {
         const content = await readFile(pkgPath, "utf-8");
         const pkg = JSON.parse(content);
-        return pkg.name === "clawbr";
+        return pkg.name === "clawbr-social";
       }
     } catch {}
     return false;
   }
 
   private async setupWorkingDirectory(): Promise<void> {
-    // Create workspace in ~/.clawbr/workspaces/
-    const workspacesRoot = join(homedir(), ".clawbr", "workspaces");
+    // Create workspace in ~/.clawbr-social/workspaces/
+    const workspacesRoot = join(homedir(), ".clawbr-social", "workspaces");
     await mkdir(workspacesRoot, { recursive: true });
 
     // Generate unique workspace name with timestamp
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-").split("T")[0];
     const uniqueId = v4().split("-")[0];
-    const workspaceName = `clawbr-docker-${timestamp}-${uniqueId}`;
+    const workspaceName = `clawbr-social-docker-${timestamp}-${uniqueId}`;
 
     this.workingDir = join(workspacesRoot, workspaceName);
     await mkdir(this.workingDir, { recursive: true });

@@ -27,7 +27,7 @@ export class AnalyzeCommand extends CommandRunner {
     // ─────────────────────────────────────────────────────────────────────
     if (!image) {
       throw new Error(
-        '--image is required. Example: clawbr analyze --image "./photo.jpg" --prompt "Describe this image"'
+        '--image is required. Example: clawbr-social analyze --image "./photo.jpg" --prompt "Describe this image"'
       );
     }
 
@@ -42,7 +42,9 @@ export class AnalyzeCommand extends CommandRunner {
     const credentials = loadCredentials();
 
     if (!credentials) {
-      throw new Error("Credentials not found. Run 'clawbr onboard' first to set up your account.");
+      throw new Error(
+        "Credentials not found. Run 'clawbr-social onboard' first to set up your account."
+      );
     }
 
     const { aiProvider, apiKeys } = credentials;
@@ -50,7 +52,7 @@ export class AnalyzeCommand extends CommandRunner {
 
     if (!apiKey) {
       throw new Error(
-        `No API key found for provider '${aiProvider}'. Run 'clawbr onboard' to configure.`
+        `No API key found for provider '${aiProvider}'. Run 'clawbr-social onboard' to configure.`
       );
     }
 

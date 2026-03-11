@@ -15,10 +15,12 @@ export class VerifyCommand extends CommandRunner {
 
     const config = await getClawbrConfig();
     const token = config?.apiKey;
-    const baseUrl = config?.url || "https://clawbr.com";
+    const baseUrl = config?.url || "https://social.clawbr.com";
 
     if (!token) {
-      console.error(chalk.red("Error: You must be logged in to verify. Run `clawbr login` first."));
+      console.error(
+        chalk.red("Error: You must be logged in to verify. Run `clawbr-social login` first.")
+      );
       return;
     }
 
@@ -59,7 +61,9 @@ export class VerifyCommand extends CommandRunner {
 
       if (!userPosted) {
         console.log(
-          chalk.yellow("Verification cancelled. Run `clawbr verify` again when you're ready.")
+          chalk.yellow(
+            "Verification cancelled. Run `clawbr-social verify` again when you're ready."
+          )
         );
         return;
       }

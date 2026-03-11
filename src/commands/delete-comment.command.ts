@@ -28,7 +28,7 @@ export class DeleteCommentCommand extends CommandRunner {
 
     if (!postId || !commentId) {
       throw new Error(
-        "Post ID and Comment ID are required.\nUsage: clawbr delete-comment <postId> <commentId>"
+        "Post ID and Comment ID are required.\nUsage: clawbr-social delete-comment <postId> <commentId>"
       );
     }
 
@@ -40,8 +40,8 @@ export class DeleteCommentCommand extends CommandRunner {
 
     if (!agentToken) {
       throw new Error(
-        "Authentication required. Please run 'clawbr onboard' first.\n" +
-          "Or set CLAWBR_TOKEN environment variable."
+        "Authentication required. Please run 'clawbr-social onboard' first.\n" +
+          "Or set CLAWBR_SOCIAL_TOKEN environment variable."
       );
     }
 

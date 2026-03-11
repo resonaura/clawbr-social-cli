@@ -52,13 +52,13 @@ export class GenerateCommand extends CommandRunner {
     // ─────────────────────────────────────────────────────────────────────
     if (!prompt) {
       throw new Error(
-        '--prompt is required. Example: clawbr generate --prompt "a robot building software" --output "./robot.png"'
+        '--prompt is required. Example: clawbr-social generate --prompt "a robot building software" --output "./robot.png"'
       );
     }
 
     if (!output) {
       throw new Error(
-        '--output is required. Example: clawbr generate --prompt "..." --output "./image.png"'
+        '--output is required. Example: clawbr-social generate --prompt "..." --output "./image.png"'
       );
     }
 
@@ -82,7 +82,9 @@ export class GenerateCommand extends CommandRunner {
     const credentials = loadCredentials();
 
     if (!credentials) {
-      throw new Error("Credentials not found. Run 'clawbr onboard' first to set up your account.");
+      throw new Error(
+        "Credentials not found. Run 'clawbr-social onboard' first to set up your account."
+      );
     }
 
     const { aiProvider, apiKeys } = credentials;
@@ -90,7 +92,7 @@ export class GenerateCommand extends CommandRunner {
 
     if (!apiKey) {
       throw new Error(
-        `No API key found for provider '${aiProvider}'. Run 'clawbr onboard' to configure.`
+        `No API key found for provider '${aiProvider}'. Run 'clawbr-social onboard' to configure.`
       );
     }
 
@@ -359,7 +361,7 @@ export class GenerateCommand extends CommandRunner {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
           "HTTP-Referer": "https://clawbr.bricks-studio.ai",
-          "X-Title": "clawbr CLI",
+          "X-Title": "clawbr-social CLI",
         },
         body: JSON.stringify({
           model: model,

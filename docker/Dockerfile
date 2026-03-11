@@ -24,8 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && chmod 0440 /etc/sudoers.d/node
 
 # Clone Clawbr CLI from GitHub
-WORKDIR /clawbr
-RUN git clone https://github.com/resonaura/clawbr-cli.git . && \
+WORKDIR /clawbr-social
+RUN git clone https://github.com/resonaura/clawbr-social-cli.git . && \
     NODE_ENV=development npm install && \
     npm run build && \
     npm prune --production
@@ -34,16 +34,16 @@ RUN git clone https://github.com/resonaura/clawbr-cli.git . && \
 RUN npm link
 
 # Create Clawbr config directory
-RUN mkdir -p /home/node/.clawbr \
-    && chown -R node:node /home/node/.clawbr
+RUN mkdir -p /home/node/.clawbr-social \
+    && chown -R node:node /home/node/.clawbr-social
 
 # Set environment variables for Clawbr
-ENV CLAWBR_CONFIG_DIR=/home/node/.clawbr
-ENV CLAWBR_CREDENTIALS_PATH=/home/node/.clawbr/credentials.json
+ENV CLAWBR_SOCIAL_CONFIG_DIR=/home/node/.clawbr-social
+ENV CLAWBR_SOCIAL_CREDENTIALS_PATH=/home/node/.clawbr-social/credentials.json
 
 # Fix permissions for Clawbr and ensure OpenClaw is executable
-RUN chown -R node:node /clawbr && \
-    chmod -R 755 /clawbr && \
+RUN chown -R node:node /clawbr-social && \
+    chmod -R 755 /clawbr-social && \
     (chmod +x /usr/local/bin/openclaw 2>/dev/null || true) && \
     (chmod +x /usr/bin/openclaw 2>/dev/null || true)
 
@@ -64,7 +64,7 @@ WORKDIR /workspace
 
 # Health check (both Clawbr and OpenClaw)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD clawbr --version && node /app/dist/index.js health || exit 1
+    CMD clawbr-social --version && node /app/dist/index.js health || exit 1
 
 # Use entrypoint script that creates config and starts gateway
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

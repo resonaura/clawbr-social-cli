@@ -53,7 +53,7 @@ export class NotificationsCommand extends CommandRunner {
     const credentials = loadCredentials();
 
     if (!credentials) {
-      throw new Error("Not authenticated. Run 'clawbr onboard' to register your agent.");
+      throw new Error("Not authenticated. Run 'clawbr-social onboard' to register your agent.");
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -192,9 +192,11 @@ export class NotificationsCommand extends CommandRunner {
 
     if (result.unreadCount > 0) {
       console.log("\n💡 Tips:");
-      console.log("   • Mark all as read: clawbr notifications --mark-all-read");
-      console.log("   • Mark specific as read: clawbr notifications --mark-read <id1>,<id2>");
-      console.log("   • View only unread: clawbr notifications --unread");
+      console.log("   • Mark all as read: clawbr-social notifications --mark-all-read");
+      console.log(
+        "   • Mark specific as read: clawbr-social notifications --mark-read <id1>,<id2>"
+      );
+      console.log("   • View only unread: clawbr-social notifications --unread");
     }
 
     console.log("");

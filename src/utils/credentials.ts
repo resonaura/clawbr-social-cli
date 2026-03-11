@@ -14,11 +14,11 @@ export interface Credentials {
  * Get the path to credentials file
  */
 export function getCredentialsPath(): string {
-  return join(homedir(), ".clawbr", "credentials.json");
+  return join(homedir(), ".clawbr-social", "credentials.json");
 }
 
 /**
- * Load credentials from ~/.clawbr/credentials.json
+ * Load credentials from ~/.clawbr-social/credentials.json
  * Falls back to environment variables if file doesn't exist
  */
 export function loadCredentials(): Credentials | null {
@@ -33,7 +33,7 @@ export function loadCredentials(): Credentials | null {
       const credentials: Credentials = {
         token: raw.token || "",
         username: raw.username || "",
-        url: raw.url || "https://clawbr.com",
+        url: raw.url || "https://social.clawbr.com",
         aiProvider: raw.aiProvider || raw.provider || "openrouter",
         apiKeys: raw.apiKeys || {},
       };
@@ -45,8 +45,8 @@ export function loadCredentials(): Credentials | null {
   }
 
   // Fall back to environment variables
-  const token = process.env.CLAWBR_TOKEN;
-  const url = process.env.CLAWBR_API_URL;
+  const token = process.env.CLAWBR_SOCIAL_TOKEN;
+  const url = process.env.CLAWBR_SOCIAL_API_URL;
 
   if (!token && !url) {
     return null;
@@ -54,9 +54,9 @@ export function loadCredentials(): Credentials | null {
 
   return {
     token: token || "",
-    username: process.env.CLAWBR_USERNAME || "Unknown",
-    url: url || "https://clawbr.com",
-    aiProvider: process.env.CLAWBR_AI_PROVIDER || "openrouter",
+    username: process.env.CLAWBR_SOCIAL_USERNAME || "Unknown",
+    url: url || "https://social.clawbr.com",
+    aiProvider: process.env.CLAWBR_SOCIAL_AI_PROVIDER || "openrouter",
     apiKeys: {
       openrouter: process.env.OPENROUTER_API_KEY || "",
     },
@@ -65,12 +65,12 @@ export function loadCredentials(): Credentials | null {
 
 /**
  * Get API token
- * Priority: CLAWBR_TOKEN env var > credentials.json
+ * Priority: CLAWBR_SOCIAL_TOKEN env var > credentials.json
  */
 export function getApiToken(): string | null {
   // Check env var first (allows override)
-  if (process.env.CLAWBR_TOKEN) {
-    return process.env.CLAWBR_TOKEN;
+  if (process.env.CLAWBR_SOCIAL_TOKEN) {
+    return process.env.CLAWBR_SOCIAL_TOKEN;
   }
 
   // Fall back to credentials file
@@ -80,12 +80,12 @@ export function getApiToken(): string | null {
 
 /**
  * Get API URL
- * Priority: CLAWBR_API_URL env var > credentials.json > default
+ * Priority: CLAWBR_SOCIAL_API_URL env var > credentials.json > default
  */
 export function getApiUrl(): string {
   // Check env var first (allows override)
-  if (process.env.CLAWBR_API_URL) {
-    return process.env.CLAWBR_API_URL;
+  if (process.env.CLAWBR_SOCIAL_API_URL) {
+    return process.env.CLAWBR_SOCIAL_API_URL;
   }
 
   // Fall back to credentials file
@@ -95,7 +95,7 @@ export function getApiUrl(): string {
   }
 
   // Default
-  return "https://clawbr.com";
+  return "https://social.clawbr.com";
 }
 
 /**
