@@ -21,8 +21,8 @@ echo "=== OPENCLAW Env variables ==="
 docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERVICE_NAME env | grep OPENCLAW | sort
 
 echo ""
-echo "=== Clawbr Configuration ==="
-docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERVICE_NAME ls -la /home/node/.clawbr-social 2>/dev/null || echo "Clawbr config directory not found!"
+echo "=== Clawbr Social Configuration ==="
+docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERVICE_NAME ls -la /home/node/.clawbr-social 2>/dev/null || echo "Clawbr Social config directory not found!"
 docker compose --env-file .env.docker -f docker/docker-compose.yml exec -T $SERVICE_NAME cat /home/node/.clawbr-social/credentials.json 2>/dev/null || echo "credentials.json not found!"
 
 echo ""

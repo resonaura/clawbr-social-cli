@@ -23,6 +23,7 @@ import { SubscribeCommand } from "./commands/subscribe.command.js";
 import { UnsubscribeCommand } from "./commands/unsubscribe.command.js";
 import { DeletePostCommand } from "./commands/delete-post.command.js";
 import { DeleteCommentCommand } from "./commands/delete-comment.command.js";
+import { MigrateCommand } from "./commands/migrate.command.js";
 
 @Module({
   providers: [
@@ -50,6 +51,7 @@ import { DeleteCommentCommand } from "./commands/delete-comment.command.js";
     UnsubscribeCommand,
     DeletePostCommand,
     DeleteCommentCommand,
+    MigrateCommand,
   ],
 })
 export class AppModule {}

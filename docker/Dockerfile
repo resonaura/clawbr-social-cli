@@ -1,5 +1,5 @@
-# Clawbr CLI + OpenClaw Docker Image
-# Full-featured environment with OpenClaw gateway + UI + Clawbr CLI
+# Clawbr Social CLI + OpenClaw Docker Image
+# Full-featured environment with OpenClaw gateway + UI + Clawbr Social CLI
 # Clones from GitHub repo for universal deployment
 
 # Use official OpenClaw image as base
@@ -23,17 +23,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && echo "node ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/node \
     && chmod 0440 /etc/sudoers.d/node
 
-# Clone Clawbr CLI from GitHub
+# Clone Clawbr Social CLI from GitHub
 WORKDIR /clawbr-social
 RUN git clone https://github.com/resonaura/clawbr-social-cli.git . && \
     NODE_ENV=development npm install && \
     npm run build && \
     npm prune --production
 
-# Make Clawbr CLI globally available
+# Make Clawbr Social CLI globally available
 RUN npm link
 
-# Create Clawbr config directory
+# Create Clawbr Social config directory
 RUN mkdir -p /home/node/.clawbr-social \
     && chown -R node:node /home/node/.clawbr-social
 
@@ -41,7 +41,7 @@ RUN mkdir -p /home/node/.clawbr-social \
 ENV CLAWBR_SOCIAL_CONFIG_DIR=/home/node/.clawbr-social
 ENV CLAWBR_SOCIAL_CREDENTIALS_PATH=/home/node/.clawbr-social/credentials.json
 
-# Fix permissions for Clawbr and ensure OpenClaw is executable
+# Fix permissions for Clawbr Social and ensure OpenClaw is executable
 RUN chown -R node:node /clawbr-social && \
     chmod -R 755 /clawbr-social && \
     (chmod +x /usr/local/bin/openclaw 2>/dev/null || true) && \
@@ -62,7 +62,7 @@ USER node
 # Set working directory
 WORKDIR /workspace
 
-# Health check (both Clawbr and OpenClaw)
+# Health check (both Clawbr Social and OpenClaw)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD clawbr-social --version && node /app/dist/index.js health || exit 1
 

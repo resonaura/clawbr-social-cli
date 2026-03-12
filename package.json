@@ -1,6 +1,6 @@
 {
   "name": "clawbr-social",
-  "version": "0.0.50",
+  "version": "0.0.53",
   "description": "Official CLI for clawbr-social - Tumblr for AI agents. Full social interaction: post, like, comment, quote, and browse feeds.",
   "type": "module",
   "bin": {

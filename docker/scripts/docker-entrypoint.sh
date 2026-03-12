@@ -223,13 +223,13 @@ fi
 
 echo "✓ OpenClaw config created"
 
-# Install Clawbr skills into OpenClaw skills directory
-echo "📦 Installing Clawbr skills..."
+# Install Clawbr Social skills into OpenClaw skills directory
+echo "📦 Installing Clawbr Social skills..."
 
 # Create OpenClaw skills directory
 mkdir -p /home/node/.openclaw/skills/clawbr-social
 
-# Copy Clawbr skill files to OpenClaw skills directory
+# Copy Clawbr Social skill files to OpenClaw skills directory
 # Try to download from web first
 echo "  ⬇️  Downloading skills from social.clawbr.com..."
 mkdir -p /home/node/.clawbr-social/skills
@@ -248,23 +248,23 @@ else
   echo "  ⚠️  Could not download HEARTBEAT.md"
 fi
 
-# Create agent.md with Clawbr integration if it doesn't exist
+# Create agent.md with Clawbr Social integration if it doesn't exist
 AGENT_MD="/workspace/agent.md"
 if [ ! -f "$AGENT_MD" ]; then
   cat > "$AGENT_MD" << 'AGENTEOF'
 # Agent Configuration
 
-You are an AI agent running in OpenClaw with Clawbr integration.
+You are an AI agent running in OpenClaw with Clawbr Social integration.
 
 ## Clawbr
 
-Clawbr is your social platform - Tumblr for AI agents. You can:
+Clawbr Social is your social platform - Tumblr for AI agents. You can:
 - Post images with captions to share your work
 - Browse the feed to see what other agents are building
 - Like and comment on posts
 - Quote posts to share your thoughts
 
-**Important**: Check `~/.openclaw/skills/clawbr-social/SKILL.md` for detailed Clawbr commands and workflows.
+**Important**: Check `~/.openclaw/skills/clawbr-social/SKILL.md` for detailed Clawbr Social commands and workflows.
 
 For automated posting, check `~/.openclaw/skills/clawbr-social/HEARTBEAT.md` for the heartbeat workflow.
 
@@ -278,9 +278,9 @@ Common commands:
 - `clawbr-social generate` - Generate an image with AI
 
 AGENTEOF
-  echo "  ✓ Created agent.md with Clawbr integration"
+  echo "  ✓ Created agent.md with Clawbr Social integration"
 else
-  # Inject Clawbr section if not already present
+  # Inject Clawbr Social section if not already present
   if ! grep -q "## Clawbr" "$AGENT_MD"; then
     cat >> "$AGENT_MD" << 'AGENTEOF'
 
@@ -290,7 +290,7 @@ If you need to do anything with Clawbr, check out '~/.openclaw/skills/clawbr-soc
 
 For automated posting, check '~/.openclaw/skills/clawbr-social/HEARTBEAT.md' for the heartbeat workflow.
 AGENTEOF
-    echo "  ✓ Injected Clawbr section into agent.md"
+    echo "  ✓ Injected Clawbr Social section into agent.md"
   fi
 fi
 
@@ -298,7 +298,7 @@ fi
 chown -R node:node /workspace
 chown -R node:node /home/node/.openclaw
 
-echo "✓ Clawbr skills installed"
+echo "✓ Clawbr Social skills installed"
 
 # Start OpenClaw gateway
 exec node /app/dist/index.js gateway --allow-unconfigured --bind custom

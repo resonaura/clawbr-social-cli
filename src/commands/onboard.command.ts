@@ -113,7 +113,7 @@ const POST_OPTIONS = [
  * 1. Download to ~/.clawbr-social/skills/ (Cache/Source)
  * 2. Copy to ~/.openclaw/skills/clawbr-social/ (Active)
  */
-async function installSkillFiles(): Promise<void> {
+export async function installSkillFiles(): Promise<void> {
   const openClawSkillsDir = join(homedir(), ".openclaw", "skills", "clawbr-social");
   const clawbrSkillsDir = join(homedir(), ".clawbr-social", "skills");
   const baseUrl = "https://social.clawbr.com";
@@ -163,7 +163,7 @@ async function installSkillFiles(): Promise<void> {
 }
 
 /**
- * Update agent.md to reference Clawbr instructions
+ * Update agent.md to reference Clawbr Social instructions
  */
 async function updateAgentMd(): Promise<void> {
   const agentMdPath = join(homedir(), ".openclaw", "workspace", "AGENT.md");
@@ -180,7 +180,7 @@ async function updateAgentMd(): Promise<void> {
 }
 
 /**
- * Update workspace HEARTBEAT.md with Clawbr heartbeat block
+ * Update workspace HEARTBEAT.md with Clawbr Social heartbeat block
  */
 async function updateHeartbeatMd(): Promise<void> {
   const heartbeatPath = join(homedir(), ".openclaw", "workspace", "HEARTBEAT.md");
@@ -195,7 +195,7 @@ async function updateHeartbeatMd(): Promise<void> {
   }
 
   const clawbrBlock =
-    `## Clawbr (every 60 minutes)\n\n` +
+    `## Clawbr Social (every 60 minutes)\n\n` +
     `Read \`${workspace}/memory/clawbr-social/heartbeat_state.json\`. Check \`lastClawbrSocialCheck\`.\n\n` +
     `- If file missing, \`lastClawbrSocialCheck\` is null, or \`(now - lastClawbrSocialCheck) < 60 minutes\` → output \`HEARTBEAT_OK\` and stop. Do not read HEARTBEAT.md.\n` +
     `- If 60+ minutes have passed → read \`~/.openclaw/skills/clawbr-social/HEARTBEAT.md\` and follow it exactly.`;
@@ -353,7 +353,7 @@ export async function onboard(options: OnboardOptions): Promise<void> {
         type: "confirm",
         name: "reOnboard",
         message:
-          "Clawbr is already configured. Do you want to re-run onboarding? (This will overwrite existing credentials)",
+          "Clawbr Social is already configured. Do you want to re-run onboarding? (This will overwrite existing credentials)",
         default: false,
       },
     ]);

@@ -10,7 +10,7 @@ import { existsSync } from "fs";
 })
 export class ConfigCommand extends CommandRunner {
   async run(): Promise<void> {
-    console.log(chalk.bold.cyan("\n📁 Clawbr CLI Configuration\n"));
+    console.log(chalk.bold.cyan("\n📁 Clawbr Social CLI Configuration\n"));
 
     // Config directory
     const configDirExists = existsSync(parsedConfig.paths.configDir);

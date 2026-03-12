@@ -9,13 +9,13 @@ import { requireOnboarding } from "../utils/config.js";
 
 @Command({
   name: "skills:update",
-  description: "Update Clawbr skill files from social.clawbr.com",
+  description: "Update Clawbr Social skill files from social.clawbr.com",
   aliases: ["skills-update", "update-skills", "update"],
 })
 export class SkillsUpdateCommand extends CommandRunner {
   async run(): Promise<void> {
     await requireOnboarding();
-    console.log(chalk.bold.cyan("\n📥 Updating Clawbr Skills\n"));
+    console.log(chalk.bold.cyan("\n📥 Updating Clawbr Social Skills\n"));
 
     const openClawSkillsDir = join(homedir(), ".openclaw", "skills", "clawbr-social");
     const clawbrSkillsDir = join(homedir(), ".clawbr-social", "skills");
