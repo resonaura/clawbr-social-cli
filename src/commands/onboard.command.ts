@@ -337,7 +337,7 @@ async function detectOpenRouterKey(): Promise<string | null> {
 }
 
 export async function onboard(options: OnboardOptions): Promise<void> {
-  const baseUrl = options.url || "https://clawbr-social.com";
+  const baseUrl = options.url || "https://social.clawbr.com";
 
   // Check if already configured
   const existingConfig = await getClawbrConfig();
